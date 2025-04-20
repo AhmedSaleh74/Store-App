@@ -1,24 +1,21 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-
+import '../helper/api.dart';
 import '../models/product_response_model.dart';
 
 class AllProductServices {
-  final dio = Dio();
+  final API api;
+  AllProductServices({required this.api});
 
   Future<List<ProductResponse>> fetchProducts() async {
-    List<ProductResponse> products = [];
+    final List<ProductResponse> products = [];
 
     final Response response =
-        await dio.get('https://fakestoreapi.com/products');
+        await api.get(url: 'https://fakestoreapi.com/products');
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = response.data;
-      products = data.map((item) => ProductResponse.fromJson(item)).toList();
-    } else {
-      debugPrint('Error: ${response.statusCode}');
-    }
-
+    final List<dynamic> data = response.data;
+    products.clear();
+    products
+        .addAll(data.map((item) => ProductResponse.fromJson(item)).toList());
     return products;
   }
 }
